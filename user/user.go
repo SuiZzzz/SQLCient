@@ -16,23 +16,20 @@ type User struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Status   int
-	Id       uint
+	Id       uint `json:"id"`
 	Nickname string
 	Avatar   string
 }
 
 var once sync.Once
-var user *User
 
-var CurrentUser *User = &User{
-	Id: 2,
-}
+var CurrentUser *User
 
 func GetUser() *User {
 	once.Do(func() {
-		user = &User{}
+		CurrentUser = &User{}
 	})
-	return user
+	return CurrentUser
 }
 
 func (user *User) Login(window fyne.Window) *serlization.Response {

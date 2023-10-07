@@ -40,8 +40,8 @@ func MakeWorkUI(window fyne.Window) *container.AppTabs {
 
 	// 左主选项卡
 	tabs := container.NewAppTabs(
-		container.NewTabItem("1", split),
-		container.NewTabItem("2", world),
+		container.NewTabItem("通知与群组", split),
+		container.NewTabItem("AI", world),
 	)
 	tabs.SetTabLocation(container.TabLocationLeading)
 	tabs.Resize(fyne.Size{Width: 100})
@@ -116,21 +116,29 @@ func getRight(window fyne.Window) *fyne.Container {
 	separator.Move(fyne.Position{Y: 42})
 
 	// 表格
-	var data = []string{"a", "string", "list"}
+	// websocket 发送消息
+	data.SendReq(module.Window, module.Conn, serlization.BaseReq{
+		UserId: user.CurrentUser.Id,
+		Type:   1,
+	})
+	// 接收消息
+	audit, message := data.ListenToNotifiedResp(module.Window, module.Conn)
 	list := widget.NewList(
 		func() int {
-			return len(data)
+			return len(audit)
 		},
 		func() fyne.CanvasObject {
-			return ext.NewTappableLabel("", func() {
-				dialog.ShowInformation("niahoa", "niahoa", window)
-			})
+			tappableLabel := ext.TappableLabel{}
+			tappableLabel.OnTapped = func() {
+				dialog.ShowInformation(tappableLabel.Text, tappableLabel.Message, module.Window)
+			}
+			return &tappableLabel
 		},
 		func(i widget.ListItemID, o fyne.CanvasObject) {
-			o.(*ext.TappableLabel).Text = data[i]
+			o.(*ext.TappableLabel).Text = audit[i]
+			o.(*ext.TappableLabel).Message = message[i]
 			o.(*ext.TappableLabel).Refresh()
 		})
-
 	list.Move(fyne.Position{X: 50, Y: 50})
 	list.Resize(fyne.Size{
 		Width:  300,

@@ -65,3 +65,18 @@ type Response struct {
 	Message string `json:"message"`
 	Error   error  `json:"error"`
 }
+
+type DataResp struct {
+	User  UserBo `json:"user"`
+	Token string `json:"token"`
+}
+
+type UserBo struct {
+	Username string `json:"username"`
+	Nickname string `json:"nickname"`
+	Level    byte   `json:"level"`
+	Phone    string `json:"phone"`
+	Email    string `json:"email"`
+	Avatar   string `json:"avatar"`
+	Id       uint   `json:"id"`
+}

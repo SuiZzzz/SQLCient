@@ -45,7 +45,10 @@ func MakeLoginUI(window fyne.Window) *fyne.Container {
 		}
 		if resp.Code == 0 {
 			dialog.ShowInformation("succeed", "登录成功", window)
+			userMap := resp.Data.(map[string]any)["User"].(map[string]any)
+			currentUser.Id = uint(userMap["id"].(float64))
 			currentUser.Status = 1
+
 		} else {
 			dialog.ShowInformation("error", "账号或密码错误", window)
 			currentUser.Status = 0
